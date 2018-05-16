@@ -1,10 +1,6 @@
-const axios = require('axios');
 const yargs = require('yargs');
 
-const httpProxyOptions = {
-  host: 'proxy.police.edmonton.ab.ca',
-  port: 8080
-};
+const geocode = require('./lib/geocode');
 
 const argv = yargs
   .options({
@@ -19,17 +15,14 @@ const argv = yargs
   .alias('help', 'h')
   .argv;
 
-console.log(argv);
+const run = async () => {
+  try {
+    const result = await geocode.geoAddress(argv.address);
+    console.log(JSON.stringify(result, null, 2));
+  } catch(error) {
+    console.log(error.message);
+  }
+}
 
-axios.get(`http://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(argv.address)}`, {
-    proxy: httpProxyOptions 
-  })
-  .then(response => {
-    const result = response.data.results[0];
-    console.log(`Formatted Address: ${result.formatted_address}`);
-    console.log(`Latitude: ${result.geometry.location.lat}`);
-    console.log(`Longitude: ${result.geometry.location.lng}`);
-  })
-  .catch(error => {
-    console.log(error);
-  });
+run();
+
