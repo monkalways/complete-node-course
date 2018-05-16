@@ -1,14 +1,10 @@
-const axios = require('axios');
+const httpClient = require('./http-client');
 
-const httpProxyOptions = {
-  host: 'proxy.police.edmonton.ab.ca',
-  port: 8080
-};
+const googleApiKey = 'AIzaSyAYfLnZ5sJ_Pjg4qp4grhaqNSKWHSxqlQU';
+const url = `https://maps.googleapis.com/maps/api/geocode/json?key=${googleApiKey}`;
 
 const geoAddress = async (address) => {
-  const response = await axios.get(`http://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}`, {
-    proxy: httpProxyOptions 
-  });
+  const response = await httpClient.get(`${url}&address=${encodeURIComponent(address)}`);
 
   const result = response.data.results[0];
 
